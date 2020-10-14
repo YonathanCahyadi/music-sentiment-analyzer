@@ -1,0 +1,20 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.tag-possitive {
+  color: #f0a70b9f;
+}
+
+.tag-peacful {
+  color: #8df00b9f;
+}
+
+.tag-negtive {
+  color: #00b7ffa4;
+}
