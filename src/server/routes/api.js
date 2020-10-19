@@ -54,7 +54,7 @@ router.post('/music', function (req, res, next) {
     Bucket: bucket_name,
     Key: S3_key
   }
-  
+
   /** contructing the Spotify get URL */
   /** if tract is given by the user search music by track, if not search by recommendation */
   let url = "https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK";
@@ -62,7 +62,7 @@ router.post('/music', function (req, res, next) {
     url = `https://api.spotify.com/v1/search?q=${query}&type=track&limit=50`;
     console.log(url)
   }
-  
+
   /** configure the request header */
   const config = {
     headers: {
@@ -148,6 +148,41 @@ router.post('/music', function (req, res, next) {
                     };
                   })
 
+                  /** get the word frequency of the lyric */
+                  let frequency = [];
+                  for (let i = 0; i < tokenized_lyric.length; i++) {
+                    if (tokenized_lyric[i] == null) {
+                      frequency.push(null);
+                    } else {
+                      /** get the frequency of the words */
+                      let output = {};
+                      for (let j = 0; j < tokenized_lyric[i].length; j++) {
+                        if (output[tokenized_lyric[i][j]] === undefined) {
+                          output[tokenized_lyric[i][j]] = 1;
+                        } else {
+                          output[tokenized_lyric[i][j]] += 1;
+                        }
+                      }
+
+                      var sortable = [];
+                      for (var word in output) {
+                        sortable.push([word, output[word]]);
+                      }
+                      sortable.sort((a, b) => {
+                        return b[1] - a[1];
+                      });
+
+                      let top10 = sortable.slice(0, 10).map((i) => {
+                        return { [i[0]]: i[1] } 
+                      })
+
+                      frequency.push(top10);
+                    }
+                  }
+
+
+
+                  /** setup the sentiment analyzer */
                   let analyzer = new Analyzer("English", stemmer, "afinn");
                   /** do the sentiments Analysis */
                   let sentiments = tokenized_lyric.map((tl) => {
@@ -178,6 +213,7 @@ router.post('/music', function (req, res, next) {
                         preview_url: t.preview_url,
                         popularity: t.popularity,
                         lyric: lyrics[i],
+                        frequency: frequency[i],
                         sentiment: {
                           number: sentiments[i],
                           tag: tag[i]
@@ -194,6 +230,7 @@ router.post('/music', function (req, res, next) {
                         preview_url: t.preview_url,
                         popularity: t.popularity,
                         lyric: lyrics[i],
+                        frequency: frequency[i],
                         sentiment: {
                           number: sentiments[i],
                           tag: tag[i]
@@ -221,7 +258,7 @@ router.post('/music', function (req, res, next) {
                     apiVersion: S3_api_ver
                   }).putObject(objectParams).promise();
 
-                
+
 
                   /** store to Redis */
                   redis_client.setex(redis_key,
@@ -231,7 +268,7 @@ router.post('/music', function (req, res, next) {
                       data: res_data
                     })
                   )
-                  
+
                   console.log(`serving ${req.body.search} from axios`);
                   res.status(200).send(res_JSON);
                 })
