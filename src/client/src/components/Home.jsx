@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Layout, Input, Row, Col, Empty } from 'antd';
+import { Layout, Input, Row, Col, Empty, Button } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import MusicSegment from './MusicSegment';
 import './Home.css'
@@ -30,6 +30,7 @@ export default class Home extends Component {
     }
 
     getMusic(value) {
+        console.log(SERVER_URL);
         this.setState({
             loading: true
         }, () => {
@@ -61,6 +62,11 @@ export default class Home extends Component {
         }
     }
 
+    handleLogout(){
+        sessionStorage.clear();
+        window.location.reload(true);
+    }
+
 
     render() {
         return (
@@ -79,6 +85,14 @@ export default class Home extends Component {
                                 onSearch={this.search}
                             />
                         </Col>
+                        <Col span={2}>
+                        <Button
+                        size='large'
+                        type="primary"
+                        onClick={this.handleLogout}>
+                            Logout
+                        </Button>
+                    </Col>
                     </Row>
                 </Header>
                 <Content
