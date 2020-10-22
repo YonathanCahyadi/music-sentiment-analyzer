@@ -37,6 +37,7 @@ export default class Home extends Component {
                 access_token: this.props.access_token,
                 search: value
             }).then(({ data }) => { /** process the data */
+                console.log(data);
                 if (data.data.length === 0) {
                     this.setState({
                         data: null,

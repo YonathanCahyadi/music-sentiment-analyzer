@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Row, Col, Rate, Drawer, Tooltip, Descriptions, Alert, Statistic, Divider, Empty } from 'antd';
 import { FrownTwoTone, SmileTwoTone, MehTwoTone } from "@ant-design/icons";
+import { ResponsivePie } from '@nivo/pie'
 const { Meta } = Card;
 
 function chunk(arr, size) {
@@ -64,16 +65,29 @@ const Content = (props) => {
     }
 
     let value = 0;
-    if(props.sentiment_tag === "neutral"){
+    if (props.sentiment_tag === "neutral") {
         value = 100;
-    }else {
+    } else {
         let n = Math.abs(props.sentiment_number) * 100
-        if(n > 100){
+        if (n > 100) {
             value = 100;
-        }else {
+        } else {
             value = n;
         }
     }
+
+    /** map the graph */
+    let graph = [];
+
+    console.log(props
+        .frequency);
+
+    if (props.frequency) {
+        graph = props.frequency.map((obj) => { return { "id": Object.keys(obj), "label": Object.keys(obj), "value": Object.values(obj) } })
+
+    }
+
+    console.log(graph);
 
     return (
         <div>
@@ -99,7 +113,7 @@ const Content = (props) => {
                         </Descriptions.Item>
                         <Descriptions.Item key="preview" label="Preview">
                             {(props.song_preview) ?
-                                <audio controls style={{ width: "100%"}}>
+                                <audio controls style={{ width: "100%" }}>
                                     <source src={props.song_preview} type="audio/mpeg" />
                                 </audio> :
                                 <Alert message="Sorry, preview song is not available" type="info" />}
@@ -107,9 +121,10 @@ const Content = (props) => {
                     </Descriptions>
                 </Col>
             </Row>
-            <Divider type="horizontal" orientation="left" plain><h3>Lyric</h3></Divider>
+
             <Row gutter={[16, 16]}>
-                <Col span={24}>
+                <Col span={12}>
+                    <Divider type="horizontal" orientation="left" plain><h3>Lyric</h3></Divider>
                     {(props.lyric) ?
                         <p>{props.lyric}</p> :
                         <Empty
@@ -123,6 +138,31 @@ const Content = (props) => {
                                 </span>
                             }
                         />
+                    }
+                </Col>
+                <Col span={12}>
+                    <Divider type="horizontal" orientation="left" plain><h3>Top 10 Words</h3></Divider>
+                    {(graph.length !== 0) ?
+                        <div style={{ width: "50vw", height: "50vh" }}>
+                            <ResponsivePie
+                                data={graph}
+                                margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+                                innerRadius={0.5}
+                                padAngle={0.7}
+                                cornerRadius={3}
+                            />
+                        </div> : <Empty
+                            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                            imageStyle={{
+                                height: 150
+                            }}
+                            description={
+                                <span>
+                                    Sorry, graph for this song is not available
+                                </span>
+                            }
+                        />
+
                     }
                 </Col>
             </Row>
@@ -172,6 +212,7 @@ export default class MusicSegment extends Component {
                 lyric={selected.lyric}
                 sentiment_number={selected.sentiment.number}
                 sentiment_tag={selected.sentiment.tag}
+                frequency={selected.frequency}
 
             />
 
@@ -228,6 +269,7 @@ export default class MusicSegment extends Component {
                 )
             }
             col_html.push(col);
+
         }
 
         /** map the col html with the Row */
