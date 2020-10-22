@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Layout, Input, Row, Col, Empty } from 'antd';
+import { Layout, Input, Row, Col, Empty, Button } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import MusicSegment from './MusicSegment';
 import './Home.css'
@@ -9,10 +9,12 @@ const { Header, Footer, Content } = Layout;
 const { Search } = Input;
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || "http://localhost:443";
 
+// Check invalid input
 function isEmptyOrSpaces(str) {
     return str === null || str.match(/^ *$/) !== null;
 }
 
+// Home page functions
 export default class Home extends Component {
     state = {
         data: null,
@@ -29,6 +31,7 @@ export default class Home extends Component {
         this.getMusic(null, this.state.selected_type);
     }
 
+    // Fetch user's spotify data based on user input
     getMusic(value) {
         this.setState({
             loading: true
@@ -53,6 +56,7 @@ export default class Home extends Component {
         })
     }
 
+    // Search function: check unser input if there is no invalid input will fecth data from spotify
     search(value) {
         if (isEmptyOrSpaces(value)) {
             this.getMusic(null);
@@ -61,24 +65,35 @@ export default class Home extends Component {
         }
     }
 
-
+    // Render the page with ANTD node package
     render() {
         return (
             <Layout>
                 <Header style={{ position: 'fixed', zIndex: 1, width: '100%', backgroundColor: '#edf0f2' }}>
-                    <Row gutter={[8, 26]} style={{ textAlign: "center", verticalAlign: "middle" }}>
+                    <Row style={{ textAlign: "center", verticalAlign: "middle" }}>
                         <Col span={3}>
-                            <h1 style={{ color: '#2c3b45' }}>Music Analyzer</h1>
+                            <h1 style={{ color: '#022605' }}>Music Analyzer</h1>
                         </Col>
-                        <Col span={19}>
+
+                        <Col span={17}>
                             <Search
-                                style={{ width: "100%", marginTop: 10 }}
+                                style={{ width: "70%", marginTop: 10 }}
                                 size='large'
                                 placeholder="search"
                                 enterButton
                                 onSearch={this.search}
                             />
+
                         </Col>
+                        <Col span={4}>
+                            <Button
+                                href='https://www.spotify.com/logout/'
+                                type="primary"
+                                ghost
+                                shape='round'
+                            > Logout</Button>
+                        </Col>
+
                     </Row>
                 </Header>
                 <Content
@@ -90,7 +105,7 @@ export default class Home extends Component {
                 <Footer
                     style={{ textAlign: 'center', backgroundColor: '#2c3b45', color: '#e4ebf0' }}>Ant Design ©2018 Created by Ant UED
                 </Footer>
-            </Layout>
+            </Layout >
         )
     }
 }

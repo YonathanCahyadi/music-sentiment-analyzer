@@ -9,7 +9,7 @@ export default class Login extends Component {
                 <div className="login-container" style={{ height: "100vh" }}>
                     <Row gutter={[8, 226]}>
                         <Col span={24}>
-                            <img alt="spotify.png" src={SpotifyImg} width={200} height={200} />
+                            <img alt="spotify.png" className="App-logo" src={SpotifyImg} width={200} height={200} />
                             <h1 style={{ color: 'white', fontSize: '50px', fontWeight: 'bold' }}>
                                 Music Sentiment Analyzer</h1>
                             <h4 style={{ color: 'whitesmoke', fontStyle: 'italic' }}>
@@ -19,9 +19,9 @@ export default class Login extends Component {
                     <Row gutter={[8, 16]}>
                         <Col span={24}>
                             <Button
-                                color='#fff7e6'
                                 type='Button'
                                 ghost
+                                shape='round'
                                 size='medium'
                                 href={`https://accounts.spotify.com/authorize?client_id=${this.props.client_id}&response_type=token&redirect_uri=${this.props.redirect_url}&show_dialog=true`}>
                                 Login Spotify
