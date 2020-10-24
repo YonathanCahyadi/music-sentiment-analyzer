@@ -8,4 +8,4 @@
 ``` npm start ```
 
 4. Open a new terminal, under the client directory run the client side
-``` npm start ``
+``` npm start ```
