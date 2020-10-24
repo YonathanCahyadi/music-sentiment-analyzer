@@ -33,6 +33,7 @@ export default class Home extends Component {
 
     // Fetch user's spotify data based on user input
     getMusic(value) {
+        console.log(SERVER_URL);
         this.setState({
             loading: true
         }, () => {
@@ -88,8 +89,8 @@ export default class Home extends Component {
                                 enterButton
                                 onSearch={this.search}
                             />
-
                         </Col>
+
                         <Col span={4}>
                             <Button
                                 type="primary"
@@ -98,7 +99,6 @@ export default class Home extends Component {
                                 onClick={this.logout}
                             > Logout</Button>
                         </Col>
-
                     </Row>
                 </Header>
                 <Content
