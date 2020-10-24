@@ -65,6 +65,11 @@ export default class Home extends Component {
         }
     }
 
+    logout() {
+        sessionStorage.clear();
+        window.location.reload(true);
+    }
+
     // Render the page with ANTD node package
     render() {
         return (
@@ -87,10 +92,10 @@ export default class Home extends Component {
                         </Col>
                         <Col span={4}>
                             <Button
-                                href='https://www.spotify.com/logout/'
                                 type="primary"
                                 ghost
                                 shape='round'
+                                onClick={this.logout}
                             > Logout</Button>
                         </Col>
 
