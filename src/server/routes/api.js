@@ -2,12 +2,10 @@ var express = require('express');
 var router = express.Router();
 
 const axios = require('axios').default;
-
 const natural = require('natural');
 const tokenizer = new natural.WordTokenizer();
 const Analyzer = require('natural').SentimentAnalyzer;
 const stemmer = require('natural').PorterStemmer;
-
 
 /** create a redis client and connect to redis */
 const redis_url = process.env.REDIS_URL || "redis://127.0.0.1";
@@ -43,7 +41,6 @@ bucket_promise.then((data) => {
   console.log(`AWS S3 Failed to create ${bucket_name} bucket`);
 })
 
-
 router.post('/music', function (req, res, next) {
   const token = req.body.access_token;
   const query = JSON.stringify(req.body.search).toLowerCase().replace(/\"/g, "");
@@ -71,21 +68,16 @@ router.post('/music', function (req, res, next) {
     }
   }
 
-
   return redis_client.get(redis_key, (err, result) => { /** check redis server */
-
     if (result) { /** server from redis */
-
       console.log(`serving ${req.body.search} from redis`)
       const result_JSON = JSON.parse(result);
       return res.status(200).json(result_JSON);
-
     } else { /** check S3 bucket */
 
       return new AWS.S3({
         apiVersion: S3_api_ver
       }).getObject(S3_params, (err, result) => {
-
         if (result) { /** server from S3 Bucket */
           const result_JSON = JSON.parse(result.Body);
 
@@ -105,7 +97,6 @@ router.post('/music', function (req, res, next) {
           /** get the spotify request */
           axios.get(url, config)
             .then(({ data }) => {
-
               let res_data = [];
 
               /** get the lyric */
@@ -163,7 +154,6 @@ router.post('/music', function (req, res, next) {
                           output[tokenized_lyric[i][j]] += 1;
                         }
                       }
-
                       var sortable = [];
                       for (var word in output) {
                         sortable.push([word, output[word]]);
@@ -171,16 +161,12 @@ router.post('/music', function (req, res, next) {
                       sortable.sort((a, b) => {
                         return b[1] - a[1];
                       });
-
                       let top10 = sortable.slice(0, 10).map((i) => {
-                        return { [i[0]]: i[1] } 
+                        return { [i[0]]: i[1] }
                       })
-
                       frequency.push(top10);
                     }
                   }
-
-
 
                   /** setup the sentiment analyzer */
                   let analyzer = new Analyzer("English", stemmer, "afinn");
@@ -238,8 +224,6 @@ router.post('/music', function (req, res, next) {
                       }
                     })
                   }
-
-
                   const res_JSON = {
                     source: "axios",
                     data: res_data
@@ -258,8 +242,6 @@ router.post('/music', function (req, res, next) {
                     apiVersion: S3_api_ver
                   }).putObject(objectParams).promise();
 
-
-
                   /** store to Redis */
                   redis_client.setex(redis_key,
                     DEFAULT_REDIS_TIME,
@@ -268,11 +250,9 @@ router.post('/music', function (req, res, next) {
                       data: res_data
                     })
                   )
-
                   console.log(`serving ${req.body.search} from axios`);
                   res.status(200).send(res_JSON);
                 })
-
             }).catch((err) => {
               console.log(err);
             })
@@ -280,10 +260,6 @@ router.post('/music', function (req, res, next) {
       })
     }
   })
-
-
-
-
 });
 
 module.exports = router;

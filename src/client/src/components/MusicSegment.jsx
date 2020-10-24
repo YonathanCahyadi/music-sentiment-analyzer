@@ -46,8 +46,6 @@ const MusicMeta = (props) => {
                     {sentiment_img}
                 </Col>
             </Row>
-
-
         </div>
     )
 }
@@ -84,13 +82,14 @@ const Content = (props) => {
 
     if (props.frequency) {
         graph = props.frequency.map((obj) => { return { "id": Object.keys(obj), "label": Object.keys(obj), "value": Object.values(obj) } })
-
     }
 
     console.log(graph);
 
     return (
         <div>
+            {/* <Button>Back</Button> */}
+
             <Row gutter={[16, 16]}>
                 <Col span={24}>
                     <Descriptions bordered>
@@ -241,7 +240,6 @@ export default class MusicSegment extends Component {
             for (let j = 0; j < arr[i].length; j++) {
                 col.push(
                     <Col span={4}>
-
                         <Card
                             cover={<img alt={arr[i][j].song_title} src={arr[i][j].track_images} />}
                             hoverable
@@ -288,8 +286,9 @@ export default class MusicSegment extends Component {
         return (
             <div clasname="music-segment">
                 {this.state.grid}
+
                 <Drawer
-                    height={800}
+                    height={600}
                     title="Music Info"
                     placement="bottom"
                     closable={true}
