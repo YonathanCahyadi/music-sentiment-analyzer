@@ -12,6 +12,9 @@ const redis_url = process.env.REDIS_URL || "redis://127.0.0.1";
 const redis = require('redis');
 const redis_client = redis.createClient(redis_url);
 const DEFAULT_REDIS_TIME = 3600;
+redis_client.on('connect', () => {
+  console.log(`Redis Connected to ${redis_url}`);
+})
 redis_client.on('error', () => {
   console.log("Error Redis");
 })
